@@ -7,6 +7,7 @@ import { ArrowDownIcon, PhoneIcon } from '@phosphor-icons/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import CategoryList from './CategoryList';
 
 export default function Menus({className}: {className?: string}){
     return (
@@ -17,12 +18,14 @@ export default function Menus({className}: {className?: string}){
                     <div className="flex items-center gap-[24px]">
                         {/* category */}
                     </div>
-                    <div className="">
-                        <RectangleButton className='capitalize h-[48px] w-[156px] bg-primary-500 text-white' icon='none'>
+                    <div className="relative">
+                        <RectangleButton className='capitalize h-[48px] w-[240px] bg-primary-500 text-white' icon='none'>
                             all categories
                             <ArrowDownIcon/>
                             {/* <Image src="/icons/CaretDown.svg" alt='logo' width="16" height="16" /> */}
                         </RectangleButton>
+                        <CategoryList/>
+
                     </div>
                     <div className="flex items-center gap-[24px]">
                         
