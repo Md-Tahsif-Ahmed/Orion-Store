@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretRight, CaretRightIcon } from "@phosphor-icons/react";
+import { CaretRightIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import React from "react";
 

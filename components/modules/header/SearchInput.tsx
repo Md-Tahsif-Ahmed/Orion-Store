@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Badge } from '@/components/custom/Badge';
 import { Button } from '@/components/ui/button';
@@ -9,16 +9,43 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { m } from 'framer-motion';
+import axios from "axios";
+import { TypeProductModel } from '@/types/models';
 
 export default function SearchInput({ className }: { className?: string }) {
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [data, setData] = useState<TypeProductModel[]>([]);
+
+  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const search = e.currentTarget.value;
+
+    if (search.length > 1) {
+      await axios
+        .get(process.env.NEXT_PUBLIC_API_URL + "/api/public/products", 
+          {
+          params: { 
+            search: search, 
+          }
+        }
+      )
+        .then((response) => {
+          setData(response.data.data);
+          console.log(response.data);
+          console.log("API URL =>", process.env.NEXT_PUBLIC_API_URL);
+
+        })
+        .catch((err)=> { console.log(err)})
+        .finally(()=> {} );
+    }
+  };
 
   return (
     <div className={cn('px-2 relative', className)}>
       <Input
         className="border-none focus:ring-white shadow-none"
         placeholder="Search for anything"
-        onMouseDown={() => setOpenDropdown(!openDropdown)}
+        onMouseDown={() => setOpenDropdown(true)}
+        onChange={handleSearch}
       />
 
       <Button variant="icon">
@@ -34,24 +61,24 @@ export default function SearchInput({ className }: { className?: string }) {
           'hidden h-[610px] absolute w-full top-12 bg-white border overflow-auto backdrop-filter shadow-gray-700 shadow-md left-0',
           openDropdown && 'flex'
         )}
-      >
-        <div className="flex flex-col gap-y-6 w-full">
-          {[1, 2, 3, 4].map((_, idx) => (
-            <Link
-              key={idx}
-              href="/"
-              className="flex items-center gap-4 py-4 px-4 border-2 border-white hover:border-secondary-700"
-            >
+       >
+        <div className="flex flex-col gap-y-6 w-full px-4 py-2">
+          {data?.map((item: TypeProductModel, idx) => (
+            <Link key={idx} href='/' className="flex items-center gap-4 hover:border-2 border-gray-500">
               <Image
-                src="https://cdn-icons-png.flaticon.com/128/1656/1656850.png"
+                src={item.images[0]?.url}
                 width={100}
-                height={100}
+                height={0}
                 alt="product image"
+                // className="object-cover"
+                // href={`/product/${item.slug || item.id}`}
               />
               <div className="flex flex-col gap-1">
-                <h3 className="text-base font-bold">product title</h3>
-                <Badge className="bg-primary-700 text-black">10%</Badge>
-                <h3 className="text-base font-bold">110$</h3>
+                <h3 className='text-base'>{item.name}</h3>
+                {item.discount > 0 && (
+                  <Badge variant="warning" className='bg-primary-600 text-base'>-{item.discount}%</Badge>
+                )}
+                <h3 className='text-base'>{item.price}$</h3>
               </div>
             </Link>
           ))}
