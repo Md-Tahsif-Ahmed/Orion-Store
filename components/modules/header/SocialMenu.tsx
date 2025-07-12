@@ -1,4 +1,4 @@
-'use client';
+// 'use client';
 
 import Container from '@/components/custom/Container';
 import React from 'react';
